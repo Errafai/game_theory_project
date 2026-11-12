@@ -1,0 +1,395 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\geometry{top=2.5cm,bottom=2.5cm,left=2.7cm,right=2.7cm}
+\definecolor{ensablue}{RGB}{0,70,140}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ensablue,
+    urlcolor=ensablue,
+    pdftitle={Rapport d'avancement — Semaine 1},
+    pdfauthor={Groupe 3}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Projet 3 — Théorie des jeux et SMA}
+\fancyhead[R]{\small Rapport S1}
+\fancyfoot[C]{\small Groupe 3 \quad | \quad Page \thepage/\pageref{LastPage}}
+\setlength{\headheight}{14pt}
+
+\titleformat{\section}
+    {\Large\bfseries\color{ensablue}}
+    {\thesection.}{0.6em}{}
+\titleformat{\subsection}
+    {\large\bfseries\color{ensablue}}
+    {\thesubsection.}{0.6em}{}
+
+\setlist[itemize]{leftmargin=1.2cm,itemsep=0.25em}
+\setlist[enumerate]{leftmargin=1.2cm,itemsep=0.35em}
+
+\begin{document}
+
+% ============================================
+% PAGE DE GARDE
+% ============================================
+\begin{titlepage}
+    \centering
+    \vspace*{0.3cm}
+
+    % Placez ensalogo.png dans le même dossier que ce fichier .tex.
+    \IfFileExists{ensalogo.png}{%
+        \includegraphics[width=12cm]{ensalogo.png}%
+    }{%
+        \fbox{\parbox[c][3cm][c]{12cm}{\centering
+        \textbf{École Nationale des Sciences Appliquées de Safi}\\
+        Logo ENSA Safi à ajouter : \texttt{ensalogo.png}}}%
+    }
+
+    \vspace{0.5cm}
+
+    \normalsize
+    \textbf{Département IRT}\\
+    \textbf{Génie Informatique et Intelligence Artificielle}\\
+    \textbf{Option : IDIA}
+
+    \vspace{1.2cm}
+
+    \large
+    \textbf{Rapport d'avancement — Semaine 1}
+
+    \vspace{0.8cm}
+
+    \Large
+    \textbf{\color{ensablue}
+    PROJET 3 : INFORMATION IMPARFAITE,\\
+    ÉQUILIBRE BAYÉSIEN PARFAIT ET ENCHÈRES}
+
+    \vspace{1.2cm}
+
+    \normalsize
+    \textbf{Réalisé par :}\\[0.2cm]
+    ELATIFI Anas\\
+    ELMAHTAL Mohamed Yassine\\
+    ERRAFAI Achraf\\
+    ERRAOUI Wiame
+
+    \vspace{0.8cm}
+
+    \textbf{Encadré par :}\\[0.2cm]
+    M. Jraifi
+
+    \vfill
+
+    \normalsize
+    \textbf{Module : Théorie des jeux et systèmes multi-agents}\\[0.2cm]
+    \textbf{Année Universitaire : 2025 / 2026}
+\end{titlepage}
+
+\pagenumbering{roman}
+\section*{Résumé exécutif}
+\addcontentsline{toc}{section}{Résumé exécutif}
+
+Ce rapport présente l'avancement du Groupe 3 au terme de la première semaine
+du Projet 3 consacré à l'information imparfaite, à l'équilibre bayésien parfait
+(EBP) et aux enchères. La période couverte est strictement limitée aux
+journées des 11 et 12 novembre 2026. L'objectif de cette phase n'était pas
+encore de produire un solveur complet, mais de construire une base de travail
+cohérente : organiser le dépôt, préparer l'environnement logiciel, extraire
+les notions théoriques essentielles et définir une trajectoire de développement
+reproductible.
+
+Le résultat principal de la Semaine 1 est un dépôt structuré, documenté et
+adapté à un matériel limité. Le modèle local \texttt{llama3.2:1b} a été retenu
+pour réduire les besoins en ressources. Les interfaces Python, les notebooks,
+les tests hors ligne et la fiche de lecture sont présents sous forme de
+préparatifs. Les fonctionnalités de calcul et de simulation restent
+explicitement réservées aux semaines suivantes.
+
+\clearpage
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\section{Introduction et contexte}
+
+Les systèmes multi-agents prennent souvent des décisions alors qu'une partie
+de l'information pertinente est privée, incomplète ou observée indirectement.
+Dans ce contexte, la théorie des jeux fournit un cadre formel pour représenter
+les interactions entre agents, leurs types, leurs croyances et leurs
+stratégies. Le Projet 3 s'intéresse plus particulièrement aux jeux de
+signalisation, à la notion d'équilibre bayésien parfait et aux mécanismes
+d'enchères.
+
+Le sujet combine ainsi une dimension théorique et une dimension
+algorithmique. La première consiste à comprendre comment les croyances sont
+mises à jour après l'observation d'un message et comment la rationalité
+séquentielle est vérifiée. La seconde consiste à transformer ces notions en
+fonctions Python testables, puis à comparer les résultats numériques aux
+références théoriques.
+
+La Semaine 1 joue le rôle de phase de cadrage. Elle permet d'éviter une
+implémentation prématurée et de fixer les conventions communes du groupe :
+organisation des fichiers, choix des dépendances, modèle local, format de
+documentation et méthode de validation.
+
+\section{Objectifs de la Semaine 1}
+
+Les objectifs retenus pour les 11 et 12 novembre 2026 étaient les suivants :
+
+\begin{enumerate}
+    \item créer un dépôt et une arborescence conformes à l'Annexe A ;
+    \item préparer un environnement Python léger et reproductible ;
+    \item configurer Ollama avec un modèle compatible avec les ressources
+    matérielles disponibles ;
+    \item rédiger une fiche de lecture Phase 0 contenant les définitions,
+    les formules et l'approche de calcul ;
+    \item analyser les interfaces nécessaires au futur prototype ;
+    \item formaliser le suivi de l'avancement dans un diagramme Gantt et un
+    rapport hebdomadaire.
+\end{enumerate}
+
+\section{Travail réalisé depuis la semaine précédente}
+
+Les travaux réalisés pendant la première semaine, les 11 et 12 novembre 2026,
+sont les suivants :
+
+\begin{itemize}
+    \item création du dépôt GitHub et de la structure locale conformément à
+    l'Annexe A ;
+    \item installation et configuration d'Ollama avec le modèle léger
+    \texttt{llama3.2:1b}, adapté à un ordinateur peu puissant ;
+    \item rédaction de la fiche de lecture Phase 0 en LaTeX dans
+    \texttt{docs/fiche\_lecture.tex} ;
+    \item revue initiale du code de cours et préparation des interfaces Python ;
+    \item création du diagramme Gantt de la Semaine 1 et du présent rapport.
+\end{itemize}
+
+\subsection{Organisation du dépôt}
+
+La structure mise en place sépare clairement la documentation, les notebooks,
+le code source et les tests. Le dossier \texttt{docs/} contient notamment la
+fiche de lecture, le Gantt et les rapports d'avancement. Le dossier
+\texttt{src/} contient les interfaces préparatoires \texttt{jeux.py},
+\texttt{experiences.py} et \texttt{agent\_tj\_sma.py}. Enfin, les notebooks
+servent à isoler les expérimentations pédagogiques et les tests permettent
+de vérifier que la base du projet peut être exécutée hors ligne.
+
+\subsection{Préparation de l'environnement}
+
+Le fichier \texttt{requirements.txt} regroupe les bibliothèques nécessaires
+au projet : calcul numérique avec NumPy et SciPy, manipulation de données avec
+Pandas, visualisation avec Matplotlib, tests avec Pytest et intégration locale
+avec LangChain et LangChain--Ollama. Le choix de ne pas ajouter de dépendances
+non indispensables contribue à garder l'installation simple.
+
+Le modèle Ollama est configuré par la variable d'environnement
+\texttt{OLLAMA\_MODEL}, avec \texttt{llama3.2:1b} comme valeur par défaut.
+Cette configuration évite de coder en dur un modèle différent et facilite la
+reproduction de l'environnement par chaque membre du groupe.
+
+\subsection{Préparation théorique}
+
+La fiche de lecture présente les éléments nécessaires à l'implémentation :
+
+\begin{itemize}
+    \item la mise à jour bayésienne des croyances après l'observation d'un
+    message ;
+    \item la meilleure réponse du récepteur compte tenu de ses croyances ;
+    \item la vérification des déviations profitables de chaque type de
+    l'émetteur ;
+    \item la distinction entre stratégies séparantes et regroupantes ;
+    \item les repères théoriques des enchères au premier et au second prix.
+\end{itemize}
+
+Pour un message $m$ observé avec une probabilité positive, la croyance
+conditionnelle s'écrit :
+\[
+\mu(t\mid m)=
+\frac{\pi(t)\Pr(m\mid t)}
+{\sum_{t'}\pi(t')\Pr(m\mid t')}.
+\]
+Le récepteur choisit ensuite une action maximisant son utilité espérée :
+\[
+a^*(m)\in\arg\max_{a\in A}
+\sum_t \mu(t\mid m)u_R(t,m,a).
+\]
+Ces formules serviront de base au solveur prévu en Semaine 2.
+
+\subsection{Préparation de l'agent}
+
+Le fichier \texttt{agent\_tj\_sma.py} constitue un template d'intégration
+locale. Il expose le nom du modèle configuré et réserve l'assemblage des outils
+LangChain à une étape ultérieure. Cette séparation est volontaire : elle
+permet de finaliser d'abord les fonctions de théorie des jeux et de ne pas
+lier les tests fondamentaux à la disponibilité du serveur Ollama.
+
+\section{Écarts entre le prévisionnel et le réalisé}
+
+La réalisation est alignée à 100\,\% sur les objectifs de la Semaine 1.
+Les tâches indiquées comme réalisées dans le diagramme Gantt correspondent
+uniquement aux journées du 11/11/2026 et du 12/11/2026. Les activités des
+semaines suivantes restent hors du périmètre réalisé de ce rapport.
+
+\subsection{Lecture du diagramme}
+
+Dans le Gantt, seules les cinq tâches de la section Semaine 1 portent
+l'attribut \texttt{done}. Les dates affichées sont le 11/11/2026 et le
+12/11/2026. Aucune tâche de prototype, de simulation, de test avancé ou de
+rapport final n'est présentée comme réalisée. Cette distinction permet de
+séparer clairement l'état réel du dépôt du planning prévisionnel.
+
+\section{Difficultés et blocages rencontrés}
+
+La principale contrainte concerne les ressources matérielles limitées. Le choix
+du modèle local \texttt{llama3.2:1b} réduit la consommation mémoire et permet
+de préparer l'agent dans un environnement adapté à un ordinateur peu puissant.
+Les tests hors ligne restent indépendants du service Ollama, ce qui facilite
+la validation locale de la structure du projet.
+
+\subsection{Contraintes matérielles}
+
+L'utilisation d'un modèle local implique de tenir compte de la mémoire
+disponible, du temps de réponse et de la capacité du poste à exécuter
+simultanément l'environnement Python et Ollama. Le choix de
+\texttt{llama3.2:1b} constitue donc un compromis entre légèreté et utilité
+pour les tâches d'assistance. Les expérimentations futures devront limiter
+la taille des entrées, contrôler le nombre d'itérations et conserver des
+graines aléatoires afin de garantir des résultats comparables.
+
+\subsection{Mesures de réduction des risques}
+
+Plusieurs mesures ont été retenues dès S1 :
+
+\begin{itemize}
+    \item conserver des tests hors ligne ne nécessitant pas Ollama ;
+    \item utiliser des stubs explicites plutôt que des implémentations
+    incomplètes présentant un faux résultat ;
+    \item isoler la configuration du modèle dans une variable d'environnement ;
+    \item documenter les commandes d'installation et d'exécution dans le
+    fichier \texttt{README.md}.
+\end{itemize}
+
+\section{Livrables produits en S1}
+
+\begin{table}[htbp]
+\centering
+\caption{Livrables effectivement produits pendant la Semaine 1}
+\begin{tabular}{p{0.35\textwidth}p{0.52\textwidth}}
+\toprule
+\textbf{Élément} & \textbf{Contenu} \\
+\midrule
+\texttt{requirements.txt} & Dépendances Python minimales du projet. \\
+\texttt{README.md} & Installation, configuration Ollama et exécution des tests. \\
+\texttt{docs/fiche\_lecture.tex} & Notions EBP, enchères, formules et approche de calcul. \\
+\texttt{docs/gantt\_previsionnel.mmd} & Source Mermaid du suivi S1. \\
+\texttt{docs/gantt\_previsionnel.png} & Rendu graphique du Gantt S1. \\
+\texttt{src/} & Interfaces préparatoires sans calcul déclaré comme finalisé. \\
+\texttt{tests/} & Vérification minimale de l'exécution hors ligne. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Vérification de la base technique}
+
+La base S1 a été vérifiée sur trois aspects. Premièrement, les notebooks sont
+des fichiers JSON valides et peuvent être ouverts par un environnement
+Jupyter. Deuxièmement, les modules Python préparatoires sont syntaxiquement
+compilables. Troisièmement, les tests hors ligne s'exécutent sans démarrer
+Ollama. Ces contrôles ne constituent pas encore une validation scientifique
+du solveur : ils confirment uniquement que la base de développement est
+cohérente et prête à être étendue.
+
+\section{Critères de réussite de la Semaine 1}
+
+La Semaine 1 est considérée comme réussie selon les critères suivants :
+
+\begin{itemize}
+    \item le périmètre S1 est documenté et distinct des travaux ultérieurs ;
+    \item le dépôt possède une organisation compréhensible par les quatre
+    membres ;
+    \item l'installation des dépendances et la configuration du modèle sont
+    décrites ;
+    \item les principales équations et notions du projet sont accessibles
+    dans la fiche de lecture ;
+    \item le suivi des tâches réalisées les 11 et 12 novembre est visible
+    dans le Gantt ;
+    \item les fichiers préparatoires ne produisent pas de résultats fictifs
+    avant l'implémentation du solveur.
+\end{itemize}
+
+\section{Plan d'action pour la Semaine 2}
+
+La Semaine 2 sera consacrée au prototype Python et au solveur :
+
+\begin{enumerate}
+    \item formaliser le jeu de signalisation ;
+    \item implémenter le prototype des utilités et des croyances ;
+    \item développer le solveur \texttt{equilibres\_ebp} ;
+    \item préparer les premiers tests unitaires.
+\end{enumerate}
+
+\section{État du dépôt Git}
+
+Le dépôt contient les fichiers de cadrage S1, les dépendances, les stubs
+Python, les notebooks, la fiche de lecture et la documentation. Les commits
+suivent la convention \texttt{[Prénom] verbe + objet}, par exemple :
+\texttt{[Anas] rédiger la fiche de lecture Phase 0}.
+
+\section{Répartition des rôles}
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.38\textwidth}
+                >{\raggedright\arraybackslash}p{0.48\textwidth}}
+\toprule
+\textbf{Membre} & \textbf{Rôle} \\
+\midrule
+ELATIFI Anas & Chef de projet / Théorie \\
+ELMAHTAL Mohamed Yassine & Quant / Python \\
+ERRAFAI Achraf & Développeur agent \\
+ERRAOUI Wiame & Testeur / Expérimentateur \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Diagramme Gantt de la Semaine 1}
+
+Le diagramme ci-dessous présente uniquement les tâches réalisées les
+11/11/2026 et 12/11/2026.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{gantt_previsionnel.png}
+    \caption{Planification et avancement réalisés pendant la Semaine 1.}
+    \label{fig:gantt-s1}
+\end{figure}
+
+\section{Conclusion}
+
+La première semaine a permis de passer d'un sujet général à une base de projet
+organisée et documentée. Le groupe dispose désormais d'un dépôt structuré,
+d'une fiche théorique, d'un environnement léger et d'un planning cohérent avec
+les contraintes du matériel. Les tâches réalisées les 11 et 12 novembre sont
+identifiées séparément des tâches futures.
+
+Le projet n'est pas présenté comme terminé : les fonctions de calcul, les
+simulations et la validation expérimentale restent à développer. La prochaine
+étape logique sera l'implémentation progressive du prototype Python, en
+commençant par la formalisation des types, messages, actions, croyances et
+fonctions d'utilité.
+
+\end{document}

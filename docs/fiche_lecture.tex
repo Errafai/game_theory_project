@@ -1,0 +1,71 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{Fiche de lecture — Projet 3}
+\author{Groupe 3 — ENSA Safi}
+\date{Semaine 1 — Phase 0}
+\begin{document}
+\maketitle
+
+\section{Objet de la lecture}
+Le projet étudie l'information imparfaite, les équilibres bayésiens parfaits
+(EBP/PBE) et les mécanismes d'enchères. Cette fiche fixe les notions et les
+formules à valider avant l'implémentation Python.
+
+\section{Équilibre bayésien parfait}
+Un EBP est un profil de stratégies $\sigma$ et de croyances $\mu$ satisfaisant
+la rationalité séquentielle et la cohérence des croyances. Pour un message $m$
+atteint avec une probabilité positive :
+\[
+\mu(t\mid m)=\frac{\pi(t)\Pr(m\mid t)}
+{\sum_{t'}\pi(t')\Pr(m\mid t')}.
+\]
+La stratégie du récepteur est une meilleure réponse :
+\[
+a^*(m)\in\arg\max_{a\in A}\sum_t\mu(t\mid m)u_R(t,m,a).
+\]
+Chaque type de l'émetteur ne doit pas gagner à dévier :
+\[
+\sigma(t)\in\arg\max_{m\in M}u_E(t,m,a^*(m)).
+\]
+Pour un message hors chemin, la croyance doit être une distribution
+normalisée et la rationalité séquentielle reste exigée.
+
+\section{Enchères}
+Pour des valeurs privées indépendantes $v_i\sim U[0,1]$, l'enchère symétrique
+de premier prix sert de repère :
+\[
+b(v)=\frac{n-1}{n}v.
+\]
+Dans une enchère au second prix, la stratégie dominante est l'offre sincère
+$b(v)=v$. Le revenu et les gains seront estimés par simulation Monte-Carlo :
+\[
+\widehat{\mathbb E}[X]=\frac{1}{N}\sum_{k=1}^{N}X_k,\qquad
+IC_{95\%}\simeq \widehat{\mathbb E}[X]\pm1.96\frac{s_X}{\sqrt N}.
+\]
+
+\section{Approche de calcul prévue}
+\begin{enumerate}
+  \item Formaliser les types, croyances, messages, actions et utilités.
+  \item Énumérer les profils de signalisation candidats (séparants et
+        regroupants).
+  \item Calculer les croyances par Bayes sur le chemin et tester les croyances
+        hors chemin.
+  \item Vérifier la meilleure réponse du récepteur puis les déviations de
+        chaque type.
+  \item Simuler les enchères avec une graine reproductible et comparer aux
+        repères théoriques.
+\end{enumerate}
+
+\section{Ressources du cours}
+\begin{itemize}
+  \item \href{https://www.gametheory.net/}{Game Theory — ressources de référence}.
+  \item \href{https://www.cs.cmu.edu/~epxing/Class/10708-19/notes/lecture-07.pdf}
+        {Notes sur l'information incomplète et les croyances}.
+  \item \href{https://ollama.com/library/llama3.2}{Ollama — llama3.2}.
+\end{itemize}
+\textit{Les liens et conventions seront complétés après validation des supports
+officiels du module.}
+\end{document}

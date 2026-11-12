@@ -1,0 +1,46 @@
+# Environnements Python
+.venv/
+venv/
+env/
+ENV/
+*.egg-info/
+
+# Caches et fichiers compilés Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Configuration locale et secrets
+.env
+.env.*
+!.env.example
+
+# Fichiers temporaires des notebooks
+.ipynb_checkpoints/
+
+# Fichiers auxiliaires LaTeX
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.out
+*.synctex.gz
+*.toc
+*.log
+
+# Les fichiers .tex et .pdf du projet restent versionnables.
+
+# Fichiers système et éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
